@@ -2,11 +2,6 @@ import Carbon
 import Cocoa
 import InputMethodKit
 
-let keyboard = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
-
-let inputSourceNSArray = TISCreateInputSourceList(nil, false).takeRetainedValue() as NSArray
-let inputSourceList = inputSourceNSArray as! [TISInputSource]
-
 var en: TISInputSource?
 var zh: TISInputSource?
 
@@ -15,14 +10,14 @@ func getInputSourceId(_ input: TISInputSource) -> String? {
     return Unmanaged<AnyObject>.fromOpaque(id).takeUnretainedValue() as? String
 }
 
-print(keyboard)
+let inputSourceNSArray = TISCreateInputSourceList(nil, false).takeRetainedValue() as NSArray
+let inputSourceList = inputSourceNSArray as! [TISInputSource]
 
 for input in inputSourceList {
     guard let id = TISGetInputSourceProperty(input, kTISPropertyInputSourceID) else { break }
-    guard let unwrapped = Unmanaged<AnyObject>.fromOpaque(id).takeUnretainedValue() else { break }
+    let unwrapped = Unmanaged<AnyObject>.fromOpaque(id).takeUnretainedValue() as! String
     switch unwrapped {
     case "org.unknown.keylayout.CustomDvorak":
-        // TISSelectInputSource(input)
         en = input
     case "com.sogou.inputmethod.sogouWB.wubi":
         zh = input
@@ -31,10 +26,11 @@ for input in inputSourceList {
     }
 }
 
-let zhId = getInputSourceId(zh!)
-let enId = getInputSourceId(en!)
+guard let zh = zh, let en = en else { exit(1) }
 
-if getInputSourceId(keyboard) == zhId {
+let keyboard = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
+
+if keyboard == zh {
     TISSelectInputSource(en)
 } else {
     TISSelectInputSource(zh)
