@@ -19,8 +19,8 @@ print(keyboard)
 
 for input in inputSourceList {
     guard let id = TISGetInputSourceProperty(input, kTISPropertyInputSourceID) else { break }
-    let unwrapped = Unmanaged<AnyObject>.fromOpaque(id).takeUnretainedValue()
-    switch unwrapped as! String {
+    guard let unwrapped = Unmanaged<AnyObject>.fromOpaque(id).takeUnretainedValue() else { break }
+    switch unwrapped {
     case "org.unknown.keylayout.CustomDvorak":
         // TISSelectInputSource(input)
         en = input
