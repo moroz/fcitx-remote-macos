@@ -2,6 +2,7 @@ import Carbon
 
 let ZH_ID = "com.sogou.inputmethod.sogouWB.wubi"
 let EN_ID = "org.unknown.keylayout.CustomDvorak"
+let US_ID = "com.apple.keylayout.US"
 
 func getInputSourceId(_ input: TISInputSource) -> String? {
   guard let id = TISGetInputSourceProperty(input, kTISPropertyInputSourceID) else { return nil }
@@ -29,7 +30,10 @@ func enableLatin() {
 
 func enableNonLatin() {
   guard !isNonLatinEnabled() else { return }
+  guard let us = findInputSource(id: US_ID) else { return }
   guard let source = findInputSource(id: ZH_ID) else { return }
+  // Switch to US first to ensure QWERTY layout
+  TISSelectInputSource(us)
   TISSelectInputSource(source)
 }
 
