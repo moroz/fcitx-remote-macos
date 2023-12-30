@@ -26,7 +26,7 @@ Then, you need to set some environment variables in your shell configuration fil
 Below is an example configuration:
 
 ```shell
-# fcitx.nvim relies on this to work
+# fcitx.nvim does not activate if the DISPLAY variable is not set
 export DISPLAY=fake
 
 # Zhuyin - Traditional
